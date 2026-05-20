@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foto Bernyanyi AI</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f14;color:#fff;margin:0;padding:20px}
+.container{max-width:900px;margin:auto;background:#1b1b24;padding:24px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+h1{color:#f5c542;text-align:center}
+label{display:block;margin-top:16px;margin-bottom:6px;font-weight:bold}
+input,textarea,button{width:100%;padding:12px;border-radius:12px;border:none;box-sizing:border-box}
+textarea{min-height:100px}
+button{margin-top:20px;background:#f5c542;color:#000;font-weight:bold;cursor:pointer}
+button:hover{opacity:.9}
+.preview{margin-top:20px;text-align:center}
+img,video{max-width:100%;border-radius:16px;margin-top:10px}
+.progress{height:18px;background:#333;border-radius:99px;overflow:hidden;margin-top:20px}
+.bar{height:100%;width:0;background:#f5c542;transition:width .3s}
+.status{margin-top:10px;color:#ddd}
+.note{font-size:14px;color:#bbb;margin-top:15px}
+a.download{display:none;margin-top:15px;background:#2ecc71;color:#fff;text-decoration:none;padding:12px 18px;border-radius:12px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎤 Foto Bernyanyi AI – Unlimited HD Video Generator</h1>
+
+<label>Upload Foto</label>
+<input type="file" id="photo" accept="image/*">
+
+<label>Upload Audio</label>
+<input type="file" id="audio" accept="audio/*">
+
+<label>Prompt Animasi</label>
+<textarea id="prompt">Hidupkan gambar ini dengan gerakan sinematik dan animasi yang halus.</textarea>
+
+<button onclick="generate()">🚀 Generate Video HD</button>
+
+<div class="preview">
+  <img id="imgPreview" style="display:none;">
+  <audio id="audioPreview" controls style="display:none; width:100%; margin-top:10px;"></audio>
+</div>
+
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="status" id="status">Siap digunakan.</div>
+
+<div class="preview">
+  <video id="videoPreview" controls style="display:none;"></video><br>
+  <a id="downloadLink" class="download" download="foto-bernyanyi-ai.mp4">⬇️ Download HD Video</a>
+</div>
+
+<p class="note">
+Versi demo ini menampilkan alur aplikasi lengkap dan membuat video preview dari foto.
+Untuk animasi bibir realistis, integrasikan model open-source seperti SadTalker, Wav2Lip, atau LivePortrait.
+</p>
+</div>
+
+<script>
+const photo = document.getElementById('photo');
+const audio = document.getElementById('audio');
+const imgPreview = document.getElementById('imgPreview');
+const audioPreview = document.getElementById('audioPreview');
+
+photo.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  imgPreview.src = URL.createObjectURL(file);
+  imgPreview.style.display = 'block';
+});
+
+audio.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  audioPreview.src = URL.createObjectURL(file);
+  audioPreview.style.display = 'block';
+});
+
+async function generate() {
+  if (!photo.files[0]) {
+    alert('Silakan upload foto terlebih dahulu.');
+    return;
+  }
+
+  const steps = [
+    'Menganalisis wajah...',
+    'Membaca audio...',
+    'Sinkronisasi bibir...',
+    'Rendering video HD...',
+    'Selesai!'
+  ];
+
+  const bar = document.getElementById('bar');
+  const status = document.getElementById('status');
+
+  for (let i = 0; i < steps.length; i++) {
+    status.textContent = steps[i];
+    bar.style.width = ((i + 1) / steps.length * 100) + '%';
+    await new Promise(r => setTimeout(r, 1200));
+  }
+
+  // Demo: gunakan gambar sebagai sumber video preview
+  const video = document.getElementById('videoPreview');
+  const link = document.getElementById('downloadLink');
+
+  // Buat "video" demo menggunakan URL gambar agar pengguna dapat melihat preview
+  video.poster = imgPreview.src;
+  video.style.display = 'block';
+
+  // Untuk demo, link download diarahkan ke gambar.
+  // Nanti dapat diganti dengan hasil MP4 dari FFmpeg.wasm.
+  link.href = imgPreview.src;
+  link.download = 'preview-foto-bernyanyi.png';
+  link.style.display = 'inline-block';
+
+  status.textContent = 'Video demo siap. Integrasikan AI untuk menghasilkan MP4 bernyanyi realistis.';
+}
+</script>
+</body>
+</html>
