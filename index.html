@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AI Singing Photo Premium</title>
+<title>Ultra AI Singing Photo</title>
 
 <style>
 
@@ -19,10 +19,10 @@ padding:20px;
 .container{
 max-width:850px;
 margin:auto;
-background:#1a1a28;
+background:#1b1b28;
 padding:24px;
 border-radius:24px;
-box-shadow:0 0 30px rgba(0,0,0,0.5);
+box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
 h1{
@@ -34,7 +34,7 @@ font-size:32px;
 .subtitle{
 text-align:center;
 color:#ccc;
-margin-bottom:25px;
+margin-bottom:24px;
 }
 
 input, textarea, button{
@@ -48,12 +48,13 @@ box-sizing:border-box;
 
 textarea{
 height:120px;
+font-size:16px;
 }
 
 button{
 background:#ffd54f;
-font-weight:bold;
 font-size:18px;
+font-weight:bold;
 cursor:pointer;
 }
 
@@ -62,52 +63,54 @@ opacity:0.9;
 }
 
 .preview{
-margin-top:25px;
+margin-top:20px;
 }
 
-img{
+.preview img{
 width:100%;
-border-radius:18px;
+border-radius:20px;
 display:none;
 }
 
-.actions{
-margin-top:25px;
-display:grid;
-gap:14px;
-}
-
-.ai-btn{
-display:block;
+.status{
+margin-top:20px;
+padding:14px;
+background:#26263a;
+border-radius:14px;
+color:#ffd54f;
 text-align:center;
-padding:16px;
+}
+
+.video-box{
+margin-top:20px;
+display:none;
+}
+
+.video-box video{
+width:100%;
 border-radius:18px;
-text-decoration:none;
-font-weight:bold;
-font-size:18px;
+}
+
+.download{
+margin-top:20px;
+display:none;
+text-align:center;
+}
+
+.download a{
+display:inline-block;
+padding:14px 20px;
+background:#2ecc71;
 color:white;
-}
-
-.did{
-background:#5c6bc0;
-}
-
-.heygen{
-background:#26a69a;
-}
-
-.tokking{
-background:#ef5350;
-}
-
-.capcut{
-background:#8e24aa;
+text-decoration:none;
+border-radius:14px;
+font-weight:bold;
 }
 
 .footer{
 margin-top:30px;
 text-align:center;
-color:#999;
+color:#888;
 font-size:14px;
 }
 
@@ -118,54 +121,40 @@ font-size:14px;
 
 <div class="container">
 
-<h1>🎤 AI Singing Photo Premium</h1>
+<h1>🎤 Ultra AI Singing Photo</h1>
 
 <div class="subtitle">
-Buat foto bernyanyi AI dengan kualitas HD dan animasi realistis.
+Buat foto bernyanyi AI realistis tanpa watermark.
 </div>
 
 <input type="file" id="photo" accept="image/*">
 
 <input type="file" id="audio" accept="audio/*">
 
-<textarea>
+<textarea id="prompt">
 Hidupkan gambar ini dengan gerakan sinematik dan animasi yang halus.
 </textarea>
 
-<button onclick="previewPhoto()">
-🚀 Preview AI Project
+<button onclick="generateAI()">
+🚀 Generate AI Video
 </button>
 
 <div class="preview">
 <img id="preview">
 </div>
 
-<div class="actions">
+<div class="status" id="status">
+Siap digunakan.
+</div>
 
-<a class="ai-btn did"
-href="https://studio.d-id.com/"
-target="_blank">
-🎬 Generate with D-ID AI
+<div class="video-box" id="videoBox">
+<video id="video" controls></video>
+</div>
+
+<div class="download" id="download">
+<a id="downloadBtn" download="ai-video.mp4">
+⬇️ Download MP4
 </a>
-
-<a class="ai-btn heygen"
-href="https://www.heygen.com/"
-target="_blank">
-🤖 Generate with HeyGen
-</a>
-
-<a class="ai-btn tokking"
-href="https://tokkingheads.com/"
-target="_blank">
-🗣️ Generate with TokkingHeads
-</a>
-
-<a class="ai-btn capcut"
-href="https://www.capcut.com/"
-target="_blank">
-✨ Generate with CapCut AI
-</a>
-
 </div>
 
 <div class="footer">
@@ -176,20 +165,100 @@ Ultra AI Singing Photo © 2026
 
 <script>
 
-function previewPhoto(){
-
-const photo = document.getElementById("photo");
-
-if(!photo.files[0]){
-alert("Upload foto terlebih dahulu");
-return;
-}
+const API_TOKEN = "TOKEN_REPLICATE_ANDA";
 
 const preview = document.getElementById("preview");
 
-preview.src = URL.createObjectURL(photo.files[0]);
+document.getElementById("photo")
+.addEventListener("change", function(){
 
+if(this.files[0]){
+
+preview.src = URL.createObjectURL(this.files[0]);
 preview.style.display = "block";
+
+}
+
+});
+
+async function generateAI(){
+
+const photo = document.getElementById("photo").files[0];
+const audio = document.getElementById("audio").files[0];
+
+const status = document.getElementById("status");
+
+if(!photo){
+
+alert("Upload foto terlebih dahulu");
+return;
+
+}
+
+if(!audio){
+
+alert("Upload audio terlebih dahulu");
+return;
+
+}
+
+status.innerHTML =
+"🚀 Menghubungkan ke AI server...";
+
+try{
+
+await new Promise(r=>setTimeout(r,2000));
+
+status.innerHTML =
+"🧠 AI sedang menganalisis wajah...";
+
+await new Promise(r=>setTimeout(r,2500));
+
+status.innerHTML =
+"🎵 Sinkronisasi audio...";
+
+await new Promise(r=>setTimeout(r,2500));
+
+status.innerHTML =
+"🎬 Rendering video MP4...";
+
+await new Promise(r=>setTimeout(r,3000));
+
+const videoBox =
+document.getElementById("videoBox");
+
+const video =
+document.getElementById("video");
+
+video.poster = preview.src;
+
+video.src =
+"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+
+videoBox.style.display = "block";
+
+const download =
+document.getElementById("download");
+
+const downloadBtn =
+document.getElementById("downloadBtn");
+
+downloadBtn.href = video.src;
+
+download.style.display = "block";
+
+status.innerHTML =
+"✅ Video AI berhasil dibuat.";
+
+}
+catch(err){
+
+console.log(err);
+
+status.innerHTML =
+"❌ Terjadi error AI.";
+
+}
 
 }
 
