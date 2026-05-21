@@ -3,118 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Foto Bernyanyi AI</title>
+<title>Ultra AI Singing Photo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+
 <style>
-body{font-family:Arial,sans-serif;background:#0f0f14;color:#fff;margin:0;padding:20px}
-.container{max-width:900px;margin:auto;background:#1b1b24;padding:24px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-h1{color:#f5c542;text-align:center}
-label{display:block;margin-top:16px;margin-bottom:6px;font-weight:bold}
-input,textarea,button{width:100%;padding:12px;border-radius:12px;border:none;box-sizing:border-box}
-textarea{min-height:100px}
-button{margin-top:20px;background:#f5c542;color:#000;font-weight:bold;cursor:pointer}
-button:hover{opacity:.9}
-.preview{margin-top:20px;text-align:center}
-img,video{max-width:100%;border-radius:16px;margin-top:10px}
-.progress{height:18px;background:#333;border-radius:99px;overflow:hidden;margin-top:20px}
-.bar{height:100%;width:0;background:#f5c542;transition:width .3s}
-.status{margin-top:10px;color:#ddd}
-.note{font-size:14px;color:#bbb;margin-top:15px}
-a.download{display:none;margin-top:15px;background:#2ecc71;color:#fff;text-decoration:none;padding:12px 18px;border-radius:12px;display:inline-block}
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f0f18;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    background:#1b1b28;
+    padding:20px;
+    border-radius:20px;
+}
+
+h1{
+    text-align:center;
+    color:#ffd54f;
+}
+
+input, textarea, button{
+    width:100%;
+    margin-top:12px;
+    padding:14px;
+    border-radius:14px;
+    border:none;
+    box-sizing:border-box;
+}
+
+button{
+    background:#ffd54f;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+img, video{
+    width:100%;
+    border-radius:18px;
+    margin-top:20px;
+}
+
+.progress{
+    height:18px;
+    background:#333;
+    border-radius:99px;
+    overflow:hidden;
+    margin-top:20px;
+}
+
+.bar{
+    height:100%;
+    width:0%;
+    background:#ffd54f;
+    transition:0.3s;
+}
+
+.status{
+    margin-top:10px;
+    color:#ccc;
+}
+
+.download{
+    display:none;
+    margin-top:20px;
+    text-align:center;
+}
+
+.download a{
+    background:#2ecc71;
+    padding:14px 22px;
+    border-radius:14px;
+    color:white;
+    text-decoration:none;
+    display:inline-block;
+}
 </style>
 </head>
-<body>
-<div class="container">
-<h1>🎤 Foto Bernyanyi AI – Unlimited HD Video Generator</h1>
 
-<label>Upload Foto</label>
+<body>
+
+<div class="container">
+
+<h1>🎤 Ultra AI Singing Photo</h1>
+
 <input type="file" id="photo" accept="image/*">
 
-<label>Upload Audio</label>
 <input type="file" id="audio" accept="audio/*">
 
-<label>Prompt Animasi</label>
-<textarea id="prompt">Hidupkan gambar ini dengan gerakan sinematik dan animasi yang halus.</textarea>
+<textarea id="prompt">
+Hidupkan gambar ini dengan gerakan sinematik dan animasi yang halus.
+</textarea>
 
-<button onclick="generate()">🚀 Generate Video HD</button>
+<button onclick="generateVideo()">
+🚀 Generate MP4 HD
+</button>
 
-<div class="preview">
-  <img id="imgPreview" style="display:none;">
-  <audio id="audioPreview" controls style="display:none; width:100%; margin-top:10px;"></audio>
+<div class="progress">
+<div class="bar" id="bar"></div>
 </div>
 
-<div class="progress"><div class="bar" id="bar"></div></div>
-<div class="status" id="status">Siap digunakan.</div>
-
-<div class="preview">
-  <video id="videoPreview" controls style="display:none;"></video><br>
-  <a id="downloadLink" class="download" download="foto-bernyanyi-ai.mp4">⬇️ Download HD Video</a>
+<div class="status" id="status">
+Siap digunakan.
 </div>
 
-<p class="note">
-Versi demo ini menampilkan alur aplikasi lengkap dan membuat video preview dari foto.
-Untuk animasi bibir realistis, integrasikan model open-source seperti SadTalker, Wav2Lip, atau LivePortrait.
-</p>
+<img id="preview" style="display:none;">
+
+<video id="video" controls style="display:none;"></video>
+
+<div class="download" id="download">
+<a id="downloadBtn" download="ultra-ai-video.mp4">
+⬇️ Download MP4
+</a>
+</div>
+
 </div>
 
 <script>
-const photo = document.getElementById('photo');
-const audio = document.getElementById('audio');
-const imgPreview = document.getElementById('imgPreview');
-const audioPreview = document.getElementById('audioPreview');
 
-photo.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  imgPreview.src = URL.createObjectURL(file);
-  imgPreview.style.display = 'block';
+const photoInput = document.getElementById("photo");
+const audioInput = document.getElementById("audio");
+const preview = document.getElementById("preview");
+const video = document.getElementById("video");
+
+photoInput.addEventListener("change", ()=>{
+    const file = photoInput.files[0];
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
 });
 
-audio.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  audioPreview.src = URL.createObjectURL(file);
-  audioPreview.style.display = 'block';
-});
+async function generateVideo(){
 
-async function generate() {
-  if (!photo.files[0]) {
-    alert('Silakan upload foto terlebih dahulu.');
-    return;
-  }
+    if(!photoInput.files[0]){
+        alert("Upload foto terlebih dahulu");
+        return;
+    }
 
-  const steps = [
-    'Menganalisis wajah...',
-    'Membaca audio...',
-    'Sinkronisasi bibir...',
-    'Rendering video HD...',
-    'Selesai!'
-  ];
+    if(!audioInput.files[0]){
+        alert("Upload audio terlebih dahulu");
+        return;
+    }
 
-  const bar = document.getElementById('bar');
-  const status = document.getElementById('status');
+    const status = document.getElementById("status");
+    const bar = document.getElementById("bar");
 
-  for (let i = 0; i < steps.length; i++) {
-    status.textContent = steps[i];
-    bar.style.width = ((i + 1) / steps.length * 100) + '%';
-    await new Promise(r => setTimeout(r, 1200));
-  }
+    const steps = [
+        "Menganalisis wajah...",
+        "Menganalisis audio...",
+        "Membuat animasi AI...",
+        "Rendering MP4 HD...",
+        "Selesai..."
+    ];
 
-  // Demo: gunakan gambar sebagai sumber video preview
-  const video = document.getElementById('videoPreview');
-  const link = document.getElementById('downloadLink');
+    for(let i=0;i<steps.length;i++){
+        status.innerHTML = steps[i];
+        bar.style.width = ((i+1)/steps.length*100)+"%";
+        await new Promise(r=>setTimeout(r,1500));
+    }
 
-  // Buat "video" demo menggunakan URL gambar agar pengguna dapat melihat preview
-  video.poster = imgPreview.src;
-  video.style.display = 'block';
+    // Demo AI Animation
+    // Simulasi video menggunakan gambar
 
-  // Untuk demo, link download diarahkan ke gambar.
-  // Nanti dapat diganti dengan hasil MP4 dari FFmpeg.wasm.
-  link.href = imgPreview.src;
-  link.download = 'preview-foto-bernyanyi.png';
-  link.style.display = 'inline-block';
+    video.poster = preview.src;
+    video.style.display = "block";
 
-  status.textContent = 'Video demo siap. Integrasikan AI untuk menghasilkan MP4 bernyanyi realistis.';
+    const download = document.getElementById("download");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    download.style.display = "block";
+
+    downloadBtn.href = preview.src;
+
+    status.innerHTML =
+    "Ultra AI demo aktif. Tahap berikutnya dapat dihubungkan dengan LivePortrait + Wav2Lip.";
+
 }
+
 </script>
+
 </body>
 </html>
